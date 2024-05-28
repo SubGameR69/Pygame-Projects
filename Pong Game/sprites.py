@@ -43,5 +43,23 @@ class Ball(pygame.sprite.Sprite):
     def move(self, dt):
         self.rect.center += self.direction * SPEED["ball"] * dt
 
+    def wall_collision(self):
+        if self.rect.top <= 0:
+            self.rect.top = 0
+            self.direction.y *= -1
+
+        if self.rect.bottom >= WINDOW_HEIGHT:
+            self.rect.bottom = WINDOW_HEIGHT
+            self.direction.y *= -1
+
+        if self.rect.right >= WINDOW_WIDTH:
+            self.rect.right = WINDOW_WIDTH
+            self.direction.x *= -1
+
+        if self.rect.left <= 0:
+            self.rect.left = 0
+            self.direction.x *= -1
+
     def update(self, dt):
         self.move(dt)
+        self.wall_collision()
