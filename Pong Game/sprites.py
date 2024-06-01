@@ -47,9 +47,10 @@ class Opponent(Paddle):
         self.direction = 1 if self.ball.rect.centery > self.rect.centery else -1
 
 class Ball(pygame.sprite.Sprite):
-    def __init__(self, groups, paddle_sprites):
+    def __init__(self, groups, paddle_sprites, update_score):
         super().__init__(groups)
         self.paddle_sprites = paddle_sprites
+        self.update_score = update_score
 
         # Image
         self.image = pygame.Surface(SIZE["ball"], pygame.SRCALPHA)
@@ -94,13 +95,13 @@ class Ball(pygame.sprite.Sprite):
             self.rect.bottom = WINDOW_HEIGHT
             self.direction.y *= -1
 
-        if self.rect.right >= WINDOW_WIDTH:
-            self.rect.right = WINDOW_WIDTH
-            self.direction.x *= -1
+        if self.rect.right >= WINDOW_WIDTH or self.rect.left <= 0:
+            self.update_score("player" if self.rect.x < WINDOW_WIDTH / 2 else "opponent")
+            self.reset()
 
-        if self.rect.left <= 0:
-            self.rect.left = 0
-            self.direction.x *= -1
+    def reset(self):
+        self.rect.center = (WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2)
+        self.direction = pygame.Vector2(choice((1, -1)), uniform(0.7, 0.8) * choice((1, -1)))
 
     def update(self, dt):
         self.old_rect = self.rect.copy()
