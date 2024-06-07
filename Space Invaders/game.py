@@ -24,6 +24,25 @@ YELLOW_LASER = pygame.image.load("assets/pixel_laser_yellow.png")
 # BackGround
 BG = pygame.transform.scale(pygame.image.load("assets/background-black.png"), (WIDTH, HEIGHT))
 
+class Laser:
+    def __init__(self, x, y, img):
+        self.x = x
+        self.y = y
+        self.img = img
+        self.mask = pygame.mask.from_surface(self.img)
+
+    def draw(self, window):
+        window.blit(self.img, (self.x, self.y))
+
+    def move(self, vel):
+        self.y += vel
+        
+    def off_screen(self, height):
+        return self.y <= height and self.y >= 0
+
+    def collision(self, object):
+        return collide(self, object)
+
 class Ship:
     def __init__(self, x, y, health=100):
         self.x = x
@@ -42,6 +61,12 @@ class Ship:
     
     def get_height(self):
         return self.ship_img.get_height()
+    
+    def shoot(self):
+        if self.cool_down_counter == 0:
+            laser = Laser(x, y, self.laser_img)
+            self.lasers.append(laser)
+            self.cool_down_counter = 1
 
 class Player(Ship):
     def __init__(self, x, y, health=100):
@@ -65,6 +90,11 @@ class Enemy(Ship):
 
     def move(self, vel):
         self.y += vel
+
+def collide(obj1, obj2):
+    offset_x = obj2.x - obj1.x
+    offset_y = obj2.y - obj1.y
+    return obj1.mask.overlap(obj2.mask, (offset_x, offset_y)) != None
 
 def main():
     running = True
