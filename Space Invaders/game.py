@@ -72,15 +72,18 @@ def main():
     level = 0
     lives = 5
     main_font = pygame.font.SysFont("BigBlueTerm437 Nerd Font", 35)
+    lost_font = pygame.font.SysFont("BigBlueTerm437 Nerd Font", 50)
 
     enemies = []
-    wave_length = 5
+    wave_length = 0
     enemy_vel = 1
 
     PLAYER_VEL = 5
 
     clock = pygame.time.Clock()
     player = Player(WIDTH/2, HEIGHT - 150)
+    lost = False
+    lost_count = 0
 
     def redraw_window():
         WIN.blit(BG, (0, 0))
@@ -96,10 +99,27 @@ def main():
 
         player.draw(WIN)
 
+        if lost:
+            lost_label = lost_font.render("You Lost !!", 1, "#fdfdfd")
+            WIN.blit(lost_label, (WIDTH/2 - lost_label.get_width()/2, HEIGHT/2 - lost_label.get_height()/2))
+
         pygame.display.update()
 
     while running:
         clock.tick(FPS)
+        redraw_window()
+
+        if lives <= 0 or player.health <= 0:
+            lost = True
+            lost_count += 1
+
+        if lost:
+            if lost_count > FPS * 3:
+                running = False
+                break
+            else:
+                continue
+
 
         if len(enemies) == 0:
             level += 1
@@ -126,10 +146,12 @@ def main():
         if keys[pygame.K_DOWN] and player.y <= HEIGHT  - player.get_height():
             player.y += 1 * PLAYER_VEL
 
-        for enemy in enemies:
+        for enemy in enemies[:]:
             enemy.move(enemy_vel)
+            if enemy.y + enemy.get_height() > HEIGHT:
+                lives -= 1
+                enemies.remove(enemy)
 
-        redraw_window()
     pygame.quit()
 
 if __name__ == "__main__":
