@@ -107,6 +107,14 @@ class Player(Ship):
                         objs.remove(obj)
                         self.lasers.remove(laser)
 
+    def draw(self, window):
+        super().draw(window)
+        self.healthbar(window)
+
+    def healthbar(self, widnow):
+        pygame.draw.rect(widnow, (255, 0, 0), (self.x, self.y + self.ship_img.get_height() + 15, self.ship_img.get_width(), 10), border_radius=2)
+        pygame.draw.rect(widnow, (0, 255, 0), (self.x, self.y + self.ship_img.get_height() + 15, self.ship_img.get_width() * (self.health/self.max_health), 10), border_radius=2)
+
 class Enemy(Ship):
     COLOR_MAP = {
         "red": (RED_SPACE_SHIP, RED_LASER),
@@ -167,7 +175,6 @@ def main():
             enemy.draw(WIN)
 
         player.draw(WIN)
-
         if lost:
             lost_label = lost_font.render("You Lost !!", 1, "#fdfdfd")
             WIN.blit(lost_label, (WIDTH/2 - lost_label.get_width()/2, HEIGHT/2 - lost_label.get_height()/2))
@@ -206,13 +213,13 @@ def main():
                 running = False
                 break
         keys = pygame.key.get_pressed()
-        if keys[pygame.K_LEFT] and player.x > 0:
+        if keys[pygame.K_LEFT] and player.x > 5:
             player.x -= 1 * PLAYER_VEL
-        if keys[pygame.K_RIGHT] and player.x <= WIDTH - player.get_width():
+        if keys[pygame.K_RIGHT] and player.x <= WIDTH - player.get_width() - 10:
             player.x += 1 * PLAYER_VEL
         if keys[pygame.K_UP] and player.y > 0:
             player.y -= 1 * PLAYER_VEL
-        if keys[pygame.K_DOWN] and player.y <= HEIGHT  - player.get_height():
+        if keys[pygame.K_DOWN] and player.y + 30 <= HEIGHT  - player.get_height():
             player.y += 1 * PLAYER_VEL
 
         if keys[pygame.K_SPACE]:
@@ -225,7 +232,11 @@ def main():
             if random.randrange(0, 4*60) == 1:
                 enemy.shoot()
 
-            if enemy.y + enemy.get_height() > HEIGHT:
+            if collide(enemy, player):
+                player.health -= 10
+                enemies.remove(enemy)
+
+            elif enemy.y + enemy.get_height() > HEIGHT:
                 lives -= 1
                 enemies.remove(enemy)
 
