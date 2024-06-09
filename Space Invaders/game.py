@@ -176,7 +176,7 @@ def main():
 
         player.draw(WIN)
         if lost:
-            lost_label = lost_font.render("You Lost !!", 1, "#fdfdfd")
+            lost_label = lost_font.render("You Lost !", 1, "#fdfdfd")
             WIN.blit(lost_label, (WIDTH/2 - lost_label.get_width()/2, HEIGHT/2 - lost_label.get_height()/2))
 
         pygame.display.update()
@@ -192,9 +192,7 @@ def main():
         if lost:
             if lost_count > FPS * 3:
                 running = False
-                break
-            else:
-                continue
+                quit()
 
 
         if len(enemies) == 0:
@@ -211,7 +209,7 @@ def main():
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
-                break
+                quit()
         keys = pygame.key.get_pressed()
         if keys[pygame.K_LEFT] and player.x > 5:
             player.x -= 1 * PLAYER_VEL
@@ -244,5 +242,23 @@ def main():
 
     pygame.quit()
 
+def main_menu():
+    running = True
+    title_font = pygame.font.SysFont("BigBlueTerm437 Nerd Font", 30)
+
+    while running:
+        WIN.blit(BG, (0, 0))
+        title_label = title_font.render("Press the mouse to begin...", 1, "#fdfdfd")
+        WIN.blit(title_label, (WIDTH / 2 - title_label.get_width() / 2, HEIGHT / 2 - title_label.get_height() / 2))
+
+        pygame.display.update()
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                running = False
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                main()
+
+    pygame.quit()
+
 if __name__ == "__main__":
-    main()
+    main_menu()
