@@ -2,6 +2,7 @@ import pygame
 from config import *
 from random import randrange
 
+pygame.font.init()
 screen = pygame.display.set_mode((SCREEN_SIZE, SCREEN_SIZE))
 pygame.display.set_caption("Snake Game")
 
@@ -20,6 +21,15 @@ snake_direction = None
 
 food_rect = None
 
+score = 0
+font = pygame.font.SysFont("Comic Sans", 25)
+
+
+def display_score(score):
+    score_text = font.render(f'Score: {score}', True, (10, 10, 12))
+    screen.blit(score_text, [0, 0])
+
+
 while running:
     if begin:
         begin = False
@@ -31,6 +41,7 @@ while running:
         snake_length = 1
         snake_parts = []
         snake_direction = pygame.math.Vector2(0, 0)
+        score = 0
 
     if bait:
         bait = False
@@ -79,8 +90,10 @@ while running:
 
     if snake_rect.colliderect(food_rect):
         snake_length += 1
+        score += 10
         bait = True
 
+    display_score(score)
     pygame.display.flip()
 
     clock.tick(FPS)
