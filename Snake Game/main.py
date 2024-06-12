@@ -17,8 +17,7 @@ snake_rect = None
 snake_length = None
 snake_parts = None
 snake_direction = None
-ran_snake_pos = randrange(0, SCREEN_SIZE, SNAKE_PART_SIZE)
-ran_food_pos = randrange(0, SCREEN_SIZE, SNAKE_PART_SIZE)
+
 
 food_rect = None
 
@@ -26,14 +25,20 @@ while running:
     if begin:
         begin = False
         time = 0
-        snake_rect = pygame.rect.Rect(ran_snake_pos, ran_snake_pos, SNAKE_PART_SIZE, SNAKE_PART_SIZE)
+        snake_rect = pygame.rect.Rect(randrange(0, SCREEN_SIZE, SNAKE_PART_SIZE),
+                                      randrange(0, SCREEN_SIZE, SNAKE_PART_SIZE),
+                                      SNAKE_PART_SIZE,
+                                      SNAKE_PART_SIZE)
         snake_length = 1
         snake_parts = []
         snake_direction = pygame.math.Vector2(0, 0)
 
     if bait:
         bait = False
-        food_rect = pygame.rect.Rect(ran_food_pos, ran_food_pos, FOOD_SIZE, FOOD_SIZE)
+        food_rect = pygame.rect.Rect(randrange(0, SCREEN_SIZE, FOOD_SIZE),
+                                     randrange(0, SCREEN_SIZE, FOOD_SIZE),
+                                     FOOD_SIZE,
+                                     FOOD_SIZE)
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT or (event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE):
@@ -63,7 +68,11 @@ while running:
         snake_parts = snake_parts[-snake_length:]
 
     pygame.draw.rect(screen, FOOD_COLOR, food_rect)
-    [pygame.draw.rect(screen, SNAKE_COLOR, snake_part) for snake_part in snake_parts]
+    [pygame.draw.rect(screen, SNAKE_COLOR, snake_part, 8, 4) for snake_part in snake_parts]
+
+    if snake_rect.colliderect(food_rect):
+        snake_length += 1
+        bait = True
 
     pygame.display.flip()
 
