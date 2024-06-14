@@ -1,5 +1,9 @@
 import pygame
+
+from objects.background import Background
 from settings import *
+import assets
+
 
 pygame.init()
 
@@ -9,12 +13,20 @@ clock = pygame.time.Clock()
 
 run = True
 
+assets.load_sprites()
+
+sprites = pygame.sprite.LayeredUpdates()
+
+Background(sprites)
+
 while run:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             run = False
 
     WIN.fill("pink")
+
+    sprites.draw(WIN)
 
     pygame.display.flip()
     clock.tick(FPS)
