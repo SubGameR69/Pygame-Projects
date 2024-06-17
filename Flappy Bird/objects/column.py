@@ -1,5 +1,6 @@
 import pygame
 import assets
+from layer import Layer
 from settings import *
 import random
 
@@ -7,6 +8,7 @@ import random
 class Column(pygame.sprite.Sprite):
     def __init__(self, *groups):
         super().__init__(*groups)
+        self._layer = Layer.OBSTACLE
         self.gap = 100
         self.sprite = assets.get_sprite("pipe-green")
         self.sprite_rect = self.sprite.get_rect()

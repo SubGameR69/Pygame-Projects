@@ -1,10 +1,12 @@
 import pygame
 import assets
 import settings
+from layer import Layer
 
 
 class Background(pygame.sprite.Sprite):
     def __init__(self, *groups, index):
+        self._layer = Layer.BACKGROUND
         self.image = assets.get_sprite("background")
         self.rect = self.image.get_rect(topleft=(settings.SCREEN_WIDTH * index, 0))
         super().__init__(*groups)
