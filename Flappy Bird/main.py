@@ -23,12 +23,12 @@ sprites = pygame.sprite.LayeredUpdates()
 Background(sprites, index=0)
 Background(sprites, index=1)
 
+
 Floor(0, sprites)
 Floor(1, sprites)
 
-pygame.time.set_timer(column_create_event, 2400)
+pygame.time.set_timer(column_create_event, 1500)
 
-Column(sprites)
 
 while run:
     for event in pygame.event.get():
