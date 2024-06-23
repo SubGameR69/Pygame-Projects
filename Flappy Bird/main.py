@@ -21,8 +21,8 @@ assets.load_sprites()
 
 sprites = pygame.sprite.LayeredUpdates()
 
-Background(sprites, index=0)
-Background(sprites, index=1)
+Background(0, sprites)
+Background(1, sprites)
 
 
 Floor(0, sprites)
@@ -30,7 +30,7 @@ Floor(1, sprites)
 
 bird = Bird(sprites)
 
-pygame.time.set_timer(column_create_event, 1500)
+pygame.time.set_timer(column_create_event, 2400)
 
 
 while run:

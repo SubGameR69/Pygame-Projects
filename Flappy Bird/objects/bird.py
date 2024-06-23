@@ -16,7 +16,7 @@ class Bird(pygame.sprite.Sprite):
         ]
 
         self.image = self.images[0]
-        self.rect = self.image.get_rect(topleft=(0, 0))
+        self.rect = self.image.get_rect(topleft=(-50, 50))
 
         self.flap = 0
 
@@ -28,6 +28,9 @@ class Bird(pygame.sprite.Sprite):
 
         self.flap += GRAVITY
         self.rect.y += self.flap
+
+        if self.rect.x < 50:
+            self.rect.x += 2
 
     def movement(self, event):
         if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
