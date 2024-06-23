@@ -39,6 +39,7 @@ while run:
             run = False
         if event.type == column_create_event:
             Column(sprites)
+        bird.movement(event)
 
     WIN.fill("pink")
 
