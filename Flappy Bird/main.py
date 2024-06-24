@@ -46,6 +46,8 @@ while run:
     sprites.draw(WIN)
     sprites.update()
 
+    bird.check_collision(sprites)
+
     pygame.display.flip()
     clock.tick(FPS)
 
