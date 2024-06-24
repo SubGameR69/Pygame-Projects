@@ -31,6 +31,8 @@ class Column(pygame.sprite.Sprite):
         self.rect = self.image.get_rect(midleft=(SCREEN_WIDTH, random.uniform(min_y, max_y)))
         self.mask = pygame.mask.from_surface(self.image)
 
+        self.passed = False
+
         super().__init__(*groups)
 
     def update(self):
@@ -38,3 +40,9 @@ class Column(pygame.sprite.Sprite):
 
         if self.rect.right <= 0:
             self.kill()
+
+    def is_passed(self):
+        if self.rect.x < 50 and not self.passed:
+            self.passed = True
+            return True
+        return False

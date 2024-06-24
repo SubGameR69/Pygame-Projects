@@ -43,6 +43,8 @@ class Bird(pygame.sprite.Sprite):
 
     def check_collision(self, sprites):
         for sprite in sprites:
-            if (type(sprite) is Column or type(sprite) is Floor) and sprite.mask.overlap(self.mask, (self.rect.x - sprite.rect.x, self.rect.y - sprite.rect.y)):
-                print("hello world")
+            if (type(sprite) is Column or type(sprite) is Floor) and sprite.mask.overlap(self.mask,
+                    (self.rect.x - sprite.rect.x, self.rect.y - sprite.rect.y)) or self.rect.top < 0:
+                return True
+        return False
 

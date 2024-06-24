@@ -16,6 +16,8 @@ clock = pygame.time.Clock()
 column_create_event = pygame.USEREVENT
 
 run = True
+gameover = False
+score = 0
 
 assets.load_sprites()
 
@@ -44,9 +46,16 @@ while run:
     WIN.fill("pink")
 
     sprites.draw(WIN)
-    sprites.update()
+    if not gameover:
+        sprites.update()
 
-    bird.check_collision(sprites)
+    if bird.check_collision(sprites):
+        gameover = True
+
+    for sprite in sprites:
+        if type(sprite) is Column and sprite.is_passed():
+            score += 1
+            print(score)
 
     pygame.display.flip()
     clock.tick(FPS)
