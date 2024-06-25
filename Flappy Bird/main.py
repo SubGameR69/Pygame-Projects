@@ -6,6 +6,7 @@ from objects.bird import Bird
 from objects.background import Background
 from objects.floor import Floor
 from objects.column import Column
+from objects.game_start_msg import GameStartMessage
 
 
 pygame.init()
@@ -17,6 +18,7 @@ column_create_event = pygame.USEREVENT
 
 run = True
 gameover = False
+gamestarted = False
 score = 0
 
 assets.load_sprites()
@@ -32,6 +34,8 @@ Floor(1, sprites)
 
 bird = Bird(sprites)
 
+game_start_msg = GameStartMessage(sprites)
+
 pygame.time.set_timer(column_create_event, 2400)
 
 
@@ -39,23 +43,26 @@ while run:
     for event in pygame.event.get():
         if event.type == pygame.QUIT or event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
             run = False
+        if event.type == pygame.KEYDOWN and  event.key == pygame.K_SPACE:
+            gamestarted = True
+            game_start_msg.kill()
+
         if event.type == column_create_event:
             Column(sprites)
         bird.movement(event)
 
-    WIN.fill("pink")
-
     sprites.draw(WIN)
-    if not gameover:
+
+    if not gameover and gamestarted:
         sprites.update()
 
     if bird.check_collision(sprites):
         gameover = True
+        gamestarted = False
 
     for sprite in sprites:
         if type(sprite) is Column and sprite.is_passed():
             score += 1
-            print(score)
 
     pygame.display.flip()
     clock.tick(FPS)
