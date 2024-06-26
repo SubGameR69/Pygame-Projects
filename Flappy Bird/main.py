@@ -9,7 +9,6 @@ from objects.column import Column
 from objects.game_start_msg import GameStartMessage
 from objects.game_over_msg import GameOverMessage
 
-
 pygame.init()
 
 WIN = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
@@ -26,27 +25,35 @@ assets.load_sprites()
 
 sprites = pygame.sprite.LayeredUpdates()
 
-Background(0, sprites)
-Background(1, sprites)
+
+def create_sprites():
+    Background(0, sprites)
+    Background(1, sprites)
+    Floor(0, sprites)
+    Floor(1, sprites)
+
+    return Bird(sprites), GameStartMessage(sprites)
 
 
-Floor(0, sprites)
-Floor(1, sprites)
+bird, game_start_msg = create_sprites()
 
-bird = Bird(sprites)
-
-game_start_msg = GameStartMessage(sprites)
-
-pygame.time.set_timer(column_create_event, 2400)
 
 
 while run:
     for event in pygame.event.get():
-        if event.type == pygame.QUIT or event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
+        if event.type == pygame.QUIT:
             run = False
-        if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
-            gamestarted = True
-            game_start_msg.kill()
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_SPACE and not gamestarted and not gameover:
+                gamestarted = True
+                game_start_msg.kill()
+                pygame.time.set_timer(column_create_event, 1500)
+
+            if event.key == pygame.K_ESCAPE and gameover:
+                gameover = False
+                gamestarted = False
+                sprites.empty()
+                bird, game_start_msg = create_sprites()
 
         if event.type == column_create_event:
             Column(sprites)
