@@ -36,7 +36,7 @@ class Column(pygame.sprite.Sprite):
         super().__init__(*groups)
 
     def update(self):
-        self.rect.x -= 1
+        self.rect.x -= 2
 
         if self.rect.right <= 0:
             self.kill()
