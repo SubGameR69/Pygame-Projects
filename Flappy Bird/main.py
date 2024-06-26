@@ -23,6 +23,7 @@ gamestarted = False
 
 
 assets.load_sprites()
+assets.load_sounds()
 
 sprites = pygame.sprite.LayeredUpdates()
 
@@ -69,10 +70,12 @@ while run:
         gamestarted = False
         GameOverMessage(sprites)
         pygame.time.set_timer(column_create_event, 0)
+        assets.play_sound("hit")
 
     for sprite in sprites:
         if type(sprite) is Column and sprite.is_passed():
             score.value += 1
+            assets.play_sound("point")
 
     pygame.display.flip()
     clock.tick(FPS)
