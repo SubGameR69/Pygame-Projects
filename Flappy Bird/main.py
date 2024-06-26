@@ -7,6 +7,7 @@ from objects.background import Background
 from objects.floor import Floor
 from objects.column import Column
 from objects.game_start_msg import GameStartMessage
+from objects.game_over_msg import GameOverMessage
 
 
 pygame.init()
@@ -43,7 +44,7 @@ while run:
     for event in pygame.event.get():
         if event.type == pygame.QUIT or event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
             run = False
-        if event.type == pygame.KEYDOWN and  event.key == pygame.K_SPACE:
+        if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
             gamestarted = True
             game_start_msg.kill()
 
@@ -59,6 +60,7 @@ while run:
     if bird.check_collision(sprites):
         gameover = True
         gamestarted = False
+        GameOverMessage(sprites)
 
     for sprite in sprites:
         if type(sprite) is Column and sprite.is_passed():
