@@ -10,6 +10,7 @@ pygame.display.set_caption("Space Shooter")
 running = True
 
 player_surf = pygame.image.load("assets/images/player.png").convert_alpha()
+player_rect = player_surf.get_rect(center = (WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2))
 star_surf = pygame.image.load("assets/images/star.png").convert_alpha()
 
 star_position = [(randint(0, WINDOW_WIDTH), randint(0, WINDOW_HEIGHT)) for _ in range(20)]
@@ -24,7 +25,7 @@ while running:
     display_surface.fill("darkgray")
     for pos in star_position:
         display_surface.blit(star_surf, pos)
-    display_surface.blit(player_surf, (200, 200))
+    display_surface.blit(player_surf, player_rect)
     pygame.display.update()
 
 pygame.quit()
