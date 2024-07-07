@@ -15,6 +15,13 @@ class Player(pygame.sprite.Sprite):
         self.rect.center += self.direction * self.speed * dt
 
 
+class Star(pygame.sprite.Sprite):
+    def __init__(self, *groups, surf):
+        super().__init__(*groups)
+        self.image = surf
+        self.rect = self.image.get_rect(center=(randint(0, WINDOW_WIDTH), randint(0, WINDOW_HEIGHT)))
+
+
 # General Setup
 pygame.init()
 WINDOW_WIDTH, WINDOW_HEIGHT = 1280, 720
@@ -24,12 +31,12 @@ clock = pygame.time.Clock()
 FPS = 60
 
 all_sprites = pygame.sprite.Group()
+star_surf = pygame.image.load("assets/images/star.png").convert_alpha()
+for _ in range(20):
+    Star(all_sprites, surf=star_surf)
 player = Player(all_sprites)
 
 running = True
-
-star_surf = pygame.image.load("assets/images/star.png").convert_alpha()
-star_position = [(randint(0, WINDOW_WIDTH), randint(0, WINDOW_HEIGHT)) for _ in range(20)]
 
 meteor_surf = pygame.image.load("assets/images/meteor.png").convert_alpha()
 meteor_rect = meteor_surf.get_rect(center=(WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2))
@@ -56,12 +63,6 @@ while running:
 
     # draw the game
     display_surface.fill("darkgray")
-    for pos in star_position:
-        display_surface.blit(star_surf, pos)
-    display_surface.blit(meteor_surf, meteor_rect)
-    display_surface.blit(laser_surf, laser_rect)
-    display_surface.blit(player.image, player.rect)
-
     all_sprites.draw(display_surface)
 
     # Player Movement
