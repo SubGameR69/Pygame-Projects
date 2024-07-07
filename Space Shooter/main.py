@@ -3,10 +3,16 @@ from random import randint
 
 
 class Player(pygame.sprite.Sprite):
-    def __init__(self):
-        super().__init__()
+    def __init__(self, *groups):
+        super().__init__(*groups)
         self.image = pygame.image.load("assets/images/player.png").convert_alpha()
         self.rect = self.image.get_rect(center=(WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2))
+        self.direction = pygame.math.Vector2()
+        self.speed = 300
+
+    def update(self, dt):
+        self.direction = self.direction.normalize() if self.direction else self.direction
+        self.rect.center += self.direction * self.speed * dt
 
 
 # General Setup
@@ -17,12 +23,10 @@ pygame.display.set_caption("Space Shooter")
 clock = pygame.time.Clock()
 FPS = 60
 
-player = Player()
+all_sprites = pygame.sprite.Group()
+player = Player(all_sprites)
 
 running = True
-
-player_direction = pygame.math.Vector2(0, 0)
-player_speed = 300
 
 star_surf = pygame.image.load("assets/images/star.png").convert_alpha()
 star_position = [(randint(0, WINDOW_WIDTH), randint(0, WINDOW_HEIGHT)) for _ in range(20)]
@@ -45,11 +49,10 @@ while running:
                 print("fire laser")
 
     keys = pygame.key.get_pressed()
-    player_direction.x = int(keys[pygame.K_RIGHT]) - int(keys[pygame.K_LEFT])
-    player_direction.y = int(keys[pygame.K_DOWN]) - int(keys[pygame.K_UP])
+    player.direction.x = int(keys[pygame.K_RIGHT]) - int(keys[pygame.K_LEFT])
+    player.direction.y = int(keys[pygame.K_DOWN]) - int(keys[pygame.K_UP])
 
-    player_direction = player_direction.normalize() if player_direction else player_direction
-    player.rect.center += player_direction * player_speed * dt
+    all_sprites.update(dt)
 
     # draw the game
     display_surface.fill("darkgray")
@@ -58,6 +61,8 @@ while running:
     display_surface.blit(meteor_surf, meteor_rect)
     display_surface.blit(laser_surf, laser_rect)
     display_surface.blit(player.image, player.rect)
+
+    all_sprites.draw(display_surface)
 
     # Player Movement
     pygame.display.update()
