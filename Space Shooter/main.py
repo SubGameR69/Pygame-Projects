@@ -38,6 +38,18 @@ class Star(pygame.sprite.Sprite):
         self.rect = self.image.get_rect(center=(randint(0, WINDOW_WIDTH), randint(0, WINDOW_HEIGHT)))
 
 
+class Laser(pygame.sprite.Sprite):
+    def __init__(self, surf, pos, *groups):
+        super().__init__(*groups)
+        self.image = surf
+        self.rect = self.image.get_rect(midbottom=pos)
+
+    def update(self, dt):
+        self.rect.centery -= 400 * dt
+        if self.rect.bottom < 0:
+            self.kill()
+
+
 # General Setup
 pygame.init()
 WINDOW_WIDTH, WINDOW_HEIGHT = 1280, 720
@@ -59,7 +71,6 @@ meteor_surf = pygame.image.load("assets/images/meteor.png").convert_alpha()
 meteor_rect = meteor_surf.get_rect(center=(WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2))
 
 laser_surf = pygame.image.load("assets/images/laser.png")
-laser_rect = laser_surf.get_rect(bottomleft=(20, WINDOW_HEIGHT - 20))
 
 # Custom events
 meteor_event = pygame.USEREVENT
@@ -78,7 +89,7 @@ while running:
             pass
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_SPACE and player.can_shoot:
-                print("laser fire")
+                Laser(laser_surf, player.rect.midtop, all_sprites)
                 player.can_shoot = False
                 player.laser_shoot_time = pygame.time.get_ticks()
 
