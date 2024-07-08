@@ -81,6 +81,7 @@ laser_surf = pygame.image.load("assets/images/laser.png")
 
 # Sprites
 all_sprites = pygame.sprite.Group()
+meteor_sprites = pygame.sprite.Group()
 
 for _ in range(20):
     Star(all_sprites, surf=star_surf)
@@ -102,7 +103,7 @@ while running:
 
         if event.type == meteor_event:
             x, y = randint(0, WINDOW_WIDTH), randint(-200, -100)
-            Meteor(meteor_surf, (x, y), all_sprites)
+            Meteor(meteor_surf, (x, y), (all_sprites, meteor_sprites))
 
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_SPACE and player.can_shoot:
@@ -112,6 +113,8 @@ while running:
 
     # update sprites
     all_sprites.update(dt)
+
+    pygame.sprite.spritecollide(player, meteor_sprites, True)
 
     # draw the game
     display_surface.fill("darkgray")
