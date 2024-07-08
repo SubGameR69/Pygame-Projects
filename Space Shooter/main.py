@@ -10,9 +10,25 @@ class Player(pygame.sprite.Sprite):
         self.direction = pygame.math.Vector2()
         self.speed = 300
 
+        # Cooldown
+        self.can_shoot = True
+        self.laser_shoot_time = 0
+        self.cooldown_duration = 400
+
+    def laser_timer(self):
+        if not self.can_shoot:
+            current_time = pygame.time.get_ticks()
+            if current_time - self.laser_shoot_time >= self.cooldown_duration:
+                self.can_shoot = True
+
     def update(self, dt):
         self.direction = self.direction.normalize() if self.direction else self.direction
         self.rect.center += self.direction * self.speed * dt
+        keys = pygame.key.get_pressed()
+        self.direction.x = int(keys[pygame.K_RIGHT]) - int(keys[pygame.K_LEFT])
+        self.direction.y = int(keys[pygame.K_DOWN]) - int(keys[pygame.K_UP])
+
+        self.laser_timer()
 
 
 class Star(pygame.sprite.Sprite):
@@ -30,19 +46,26 @@ pygame.display.set_caption("Space Shooter")
 clock = pygame.time.Clock()
 FPS = 60
 
+# Sprites
 all_sprites = pygame.sprite.Group()
+
 star_surf = pygame.image.load("assets/images/star.png").convert_alpha()
 for _ in range(20):
     Star(all_sprites, surf=star_surf)
-player = Player(all_sprites)
 
-running = True
+player = Player(all_sprites)
 
 meteor_surf = pygame.image.load("assets/images/meteor.png").convert_alpha()
 meteor_rect = meteor_surf.get_rect(center=(WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2))
 
 laser_surf = pygame.image.load("assets/images/laser.png")
 laser_rect = laser_surf.get_rect(bottomleft=(20, WINDOW_HEIGHT - 20))
+
+# Custom events
+meteor_event = pygame.USEREVENT
+pygame.time.set_timer(meteor_event, 500)
+
+running = True
 
 while running:
     dt = clock.tick(FPS) / 1000
@@ -51,13 +74,13 @@ while running:
         if event.type == pygame.QUIT or (event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE):
             running = False
 
+        if event.type == meteor_event:
+            pass
         if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_SPACE:
-                print("fire laser")
-
-    keys = pygame.key.get_pressed()
-    player.direction.x = int(keys[pygame.K_RIGHT]) - int(keys[pygame.K_LEFT])
-    player.direction.y = int(keys[pygame.K_DOWN]) - int(keys[pygame.K_UP])
+            if event.key == pygame.K_SPACE and player.can_shoot:
+                print("laser fire")
+                player.can_shoot = False
+                player.laser_shoot_time = pygame.time.get_ticks()
 
     all_sprites.update(dt)
 
@@ -65,7 +88,6 @@ while running:
     display_surface.fill("darkgray")
     all_sprites.draw(display_surface)
 
-    # Player Movement
     pygame.display.update()
 
 pygame.quit()
