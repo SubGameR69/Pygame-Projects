@@ -1,5 +1,5 @@
 import pygame
-from random import randint
+from random import randint, uniform
 
 
 class Player(pygame.sprite.Sprite):
@@ -50,6 +50,22 @@ class Laser(pygame.sprite.Sprite):
             self.kill()
 
 
+class Meteor(pygame.sprite.Sprite):
+    def __init__(self, surf, pos, *groups):
+        super().__init__(*groups)
+        self.image = surf
+        self.rect = self.image.get_rect(center=pos)
+        self.start_time = pygame.time.get_ticks()
+        self.life_time = 3000
+        self.direction = pygame.math.Vector2(uniform(-0.5, 0.5), 1)
+        self.speed = randint(400, 500)
+
+    def update(self, dt):
+        self.rect.center += self.direction * self.speed * dt
+        if pygame.time.get_ticks() - self.start_time >= self.life_time:
+            self.kill()
+
+
 # General Setup
 pygame.init()
 WINDOW_WIDTH, WINDOW_HEIGHT = 1280, 720
@@ -58,19 +74,18 @@ pygame.display.set_caption("Space Shooter")
 clock = pygame.time.Clock()
 FPS = 60
 
+# Imports
+star_surf = pygame.image.load("assets/images/star.png").convert_alpha()
+meteor_surf = pygame.image.load("assets/images/meteor.png").convert_alpha()
+laser_surf = pygame.image.load("assets/images/laser.png")
+
 # Sprites
 all_sprites = pygame.sprite.Group()
 
-star_surf = pygame.image.load("assets/images/star.png").convert_alpha()
 for _ in range(20):
     Star(all_sprites, surf=star_surf)
 
 player = Player(all_sprites)
-
-meteor_surf = pygame.image.load("assets/images/meteor.png").convert_alpha()
-meteor_rect = meteor_surf.get_rect(center=(WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2))
-
-laser_surf = pygame.image.load("assets/images/laser.png")
 
 # Custom events
 meteor_event = pygame.USEREVENT
@@ -86,13 +101,16 @@ while running:
             running = False
 
         if event.type == meteor_event:
-            pass
+            x, y = randint(0, WINDOW_WIDTH), randint(-200, -100)
+            Meteor(meteor_surf, (x, y), all_sprites)
+
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_SPACE and player.can_shoot:
                 Laser(laser_surf, player.rect.midtop, all_sprites)
                 player.can_shoot = False
                 player.laser_shoot_time = pygame.time.get_ticks()
 
+    # update sprites
     all_sprites.update(dt)
 
     # draw the game
