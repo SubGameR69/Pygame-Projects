@@ -71,6 +71,21 @@ class Meteor(pygame.sprite.Sprite):
         self.image = pygame.transform.rotozoom(self.original, self.rotation, 1)
         self.rect = self.image.get_rect(center = self.rect.center)
 
+class AnimatedExplosion(pygame.sprite.Sprite):
+    def __init__(self, frames, pos,*groups):
+        super().__init__(*groups)
+        self.frames = frames
+        self.frame_idx = 0
+        self.image = self.frames[self.frame_idx]
+        self.rect = self.image.get_rect(center=pos)
+
+    def update(self, dt):
+        self.frame_idx += 20 * dt
+        if self.frame_idx < len(self.frames):
+            self.image = self.frames[int(self.frame_idx)]
+        else:
+            self.kill()
+
 
 def collisions():
     global running
@@ -81,6 +96,7 @@ def collisions():
         collided_sprites = pygame.sprite.spritecollide(laser, meteor_sprites, True)
         if collided_sprites:
             laser.kill()
+            AnimatedExplosion(explosion_frames, laser.rect.midtop, all_sprites)
 
 
 def display_score():
@@ -105,6 +121,7 @@ star_surf = pygame.image.load("assets/images/star.png").convert_alpha()
 meteor_surf = pygame.image.load("assets/images/meteor.png").convert_alpha()
 laser_surf = pygame.image.load("assets/images/laser.png")
 font = pygame.font.Font("assets/images/Oxanium-Bold.ttf", 40)
+explosion_frames = [pygame.image.load(f"assets/images/explosion/{num}.png").convert_alpha() for num in range(21)]
 
 # Sprites
 all_sprites = pygame.sprite.Group()
