@@ -97,6 +97,7 @@ def collisions():
         if collided_sprites:
             laser.kill()
             AnimatedExplosion(explosion_frames, laser.rect.midtop, all_sprites)
+            explosion_sound.play()
 
 
 def display_score():
@@ -122,6 +123,14 @@ meteor_surf = pygame.image.load("assets/images/meteor.png").convert_alpha()
 laser_surf = pygame.image.load("assets/images/laser.png")
 font = pygame.font.Font("assets/images/Oxanium-Bold.ttf", 40)
 explosion_frames = [pygame.image.load(f"assets/images/explosion/{num}.png").convert_alpha() for num in range(21)]
+
+# Load Sounds
+laser_sound = pygame.mixer.Sound("assets/audio/laser.wav")
+laser_sound.set_volume(0.5)
+explosion_sound = pygame.mixer.Sound("assets/audio/explosion.wav")
+game_music = pygame.mixer.Sound("assets/audio/game_music.wav")
+game_music.set_volume(0.4)
+game_music.play(loops=-1)
 
 # Sprites
 all_sprites = pygame.sprite.Group()
@@ -155,6 +164,7 @@ while running:
                 Laser(laser_surf, player.rect.midtop, (all_sprites, laser_sprites))
                 player.can_shoot = False
                 player.laser_shoot_time = pygame.time.get_ticks()
+                laser_sound.play()
 
     # update sprites
     all_sprites.update(dt)
