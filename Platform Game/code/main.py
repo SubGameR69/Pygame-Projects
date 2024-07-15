@@ -30,7 +30,6 @@ class Game:
             if obj.name == "Player":
                 Player((obj.x, obj.y), self.all_sprites, self.collision_sprites)
         
-        
     def run(self):
         while self.running:
             dt = self.clock.tick(FPS) / 1000
