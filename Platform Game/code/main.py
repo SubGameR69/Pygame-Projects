@@ -1,4 +1,5 @@
 from settings import *
+from sprites import Sprite
 
 class Game:
     def __init__(self):
@@ -11,6 +12,19 @@ class Game:
         # groups
         self.all_sprites = pygame.sprite.Group()
         self.collision_sprites = pygame.sprite.Group()
+        
+        # load game
+        self.setup()
+        
+    def setup(self):
+        tmx_map = load_pygame(join("data", "maps", "world.tmx"))
+        
+        for x, y, image in tmx_map.get_layer_by_name("Main").tiles():
+            Sprite((x * TILE_SIZE, y * TILE_SIZE), image, (self.all_sprites, self.collision_sprites))
+            
+        for x, y, image in tmx_map.get_layer_by_name("Decoration").tiles():
+            Sprite((x * TILE_SIZE, y * TILE_SIZE), image, self.all_sprites)
+        
         
     def run(self):
         while self.running:
