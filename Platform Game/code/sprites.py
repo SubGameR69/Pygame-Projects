@@ -15,10 +15,13 @@ class Player(Sprite):
         self.collision_sprites = collision_sprites
         self.speed = 400
         self.gravity = 50
+        self.on_floor = False
         
     def input(self):
         keys = pygame.key.get_pressed()
         self.direction.x = int(keys[pygame.K_RIGHT]) - int(keys[pygame.K_LEFT])
+        if keys[pygame.K_SPACE] and self.on_floor:
+            self.direction.y = -20
         
     def move(self, dt):
         # horizontal
@@ -26,6 +29,7 @@ class Player(Sprite):
         self.collision("horizontal")
         
         # vertical
+        self.on_floor = False
         self.direction.y += self.gravity * dt
         self.rect.y += self.direction.y
         self.collision("vertical")
@@ -40,6 +44,7 @@ class Player(Sprite):
                     if self.direction.y > 0 : 
                         self.rect.bottom = sprite.rect.top
                         self.direction.y = 0
+                        self.on_floor = True
                     if self.direction.y < 0 : self.rect.top = sprite.rect.bottom
         
     def update(self, dt):
