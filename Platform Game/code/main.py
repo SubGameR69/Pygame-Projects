@@ -1,6 +1,7 @@
 from settings import *
 from sprites import *
 from groups import AllSprites
+from assets import *
 
 class Game:
     def __init__(self):
@@ -15,7 +16,13 @@ class Game:
         self.collision_sprites = pygame.sprite.Group()
         
         # load game
+        self.load_assets()
         self.setup()
+        
+    def load_assets(self):
+        # graphics
+        self.player_frames = import_folder("images", "player")
+        self.bullet_surf = import_image("images", "gun", "bullet")
         
     def setup(self):
         tmx_map = load_pygame(join("data", "maps", "world.tmx"))
