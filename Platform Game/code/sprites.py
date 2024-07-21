@@ -62,6 +62,8 @@ class Player(AnimatedSprites):
             self.flip = self.direction.x < 0
         else:
             self.frame_index = 0
+        if not self.on_floor:
+            self.frame_index = 0
         self.image = self.frames[int(self.frame_index) % len(self.frames)]
         self.image = pygame.transform.flip(self.image, self.flip, False)
     
