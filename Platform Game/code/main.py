@@ -47,7 +47,6 @@ class Game:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT or (event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE):
                     self.running = False
-                    
             # update
             self.all_sprites.update(dt)
             
