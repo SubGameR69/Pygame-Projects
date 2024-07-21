@@ -6,10 +6,18 @@ class Sprite(pygame.sprite.Sprite):
         self.image = surf
         self.rect = self.image.get_rect(topleft=pos)
         
-class Player(Sprite):
-    def __init__(self, pos, groups, collision_sprites):
-        surf = pygame.Surface((40, 80))
-        super().__init__(pos, surf, groups)
+class AnimatedSprites(Sprite):
+    def __init__(self, frames, pos, groups):
+        self.frames, self.frame_index, self.animation_speed = frames, 0, 10
+        super().__init__(pos, self.frames[self.frame_index], groups)
+        
+    def animate(self, dt):
+        self.frame_index += self.animation_speed * dt
+        self.image = self.frames[int(self.frame_index) % len(self.frames)]
+        
+class Player(AnimatedSprites):
+    def __init__(self, pos, groups, collision_sprites, frames):
+        super().__init__(frames ,pos, groups)
         # movement & collision
         self.direction = pygame.Vector2()
         self.collision_sprites = collision_sprites
