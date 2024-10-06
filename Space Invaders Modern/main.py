@@ -1,6 +1,7 @@
 import pygame, sys
 from player import Player
 import obstacle
+from alien import Alien
 
 
 class Game:
@@ -16,6 +17,20 @@ class Game:
         self.obstacle_amount = 4
         self.obstacle_x_offset = [num * (SCREEN_WIDTH / self.obstacle_amount) for num in range(self.obstacle_amount)]
         self.create_multiple_obstacles(*self.obstacle_x_offset, x_start=SCREEN_WIDTH / 15, y_start=480)
+
+        # Aline setup
+        self.aliens = pygame.sprite.Group()
+        self.aliens_setup(rows=6, cols=8)
+
+    def aliens_setup(self, rows, cols, x_distance=60, y_distance=48, x_offset=70, y_offset=100):
+        for row_idx, row in enumerate(range(rows)):
+            for col_idx, col in enumerate(range(cols)):
+                x = col_idx * x_distance + x_offset
+                y = row_idx * y_distance + y_offset
+                if row_idx == 0: alien_sprite = Alien("yellow", x, y)
+                elif 1 <= row_idx <= 2: alien_sprite = Alien("green", x, y)
+                else: alien_sprite = Alien("red", x, y)
+                self.aliens.add(alien_sprite)
 
     def create_obstacle(self, x_start, y_start, offset_x):
         for row_idx, row in enumerate(self.shape):
@@ -35,6 +50,7 @@ class Game:
         self.player.sprite.lasers.draw(screen)
         self.player.draw(screen)
         self.blocks.draw(screen)
+        self.aliens.draw(screen)
         # update all sprite groups
         # draw all sprite groups
 
