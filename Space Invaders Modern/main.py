@@ -21,6 +21,7 @@ class Game:
         # Aline setup
         self.aliens = pygame.sprite.Group()
         self.aliens_setup(rows=6, cols=8)
+        self.alien_direction = 1
 
     def aliens_setup(self, rows, cols, x_distance=60, y_distance=48, x_offset=70, y_offset=100):
         for row_idx, row in enumerate(range(rows)):
@@ -41,18 +42,36 @@ class Game:
                     block = obstacle.Block(self.block_size, (241, 79, 80), x, y)
                     self.blocks.add(block)
 
+    def alien_pos_checker(self):
+        all_aliens = self.aliens.sprites()
+        for alien in all_aliens:
+            if alien.rect.right >= SCREEN_WIDTH:
+                self.alien_direction = -1
+                self.alien_move_down(2)
+            elif alien.rect.left <= 0:
+                self.alien_direction = 1
+                self.alien_move_down(2)
+
+    def alien_move_down(self, distance):
+        if self.aliens:
+            for alien in self.aliens.sprites():
+                alien.rect.y += distance
+
     def create_multiple_obstacles(self, *offset, x_start, y_start):
         for offset_x in offset:
             self.create_obstacle(x_start, y_start, offset_x)
 
     def run(self):
+        # update all sprite groups
         self.player.update()
+        self.aliens.update(self.alien_direction)
+        self.alien_pos_checker()
+
+        # draw all sprite groups
         self.player.sprite.lasers.draw(screen)
         self.player.draw(screen)
         self.blocks.draw(screen)
         self.aliens.draw(screen)
-        # update all sprite groups
-        # draw all sprite groups
 
 
 if __name__ == "__main__":
