@@ -160,12 +160,31 @@ class Game:
         self.display_score()
 
 
+class CRT:
+    def __init__(self):
+        self.tv = pygame.image.load("./graphics/tv.png").convert_alpha()
+        self.tv = pygame.transform.scale(self.tv, (SCREEN_WIDTH, SCREEN_HEIGHT))
+
+    def crt_lines(self):
+        line_height = 3
+        line_amount = int(SCREEN_HEIGHT / line_height)
+        for line in range(line_amount):
+            y_pos = line * line_height
+            pygame.draw.line(self.tv, "black", (0, y_pos), (SCREEN_WIDTH, y_pos), 1)
+
+    def draw(self):
+        self.tv.set_alpha(randint(75, 90))
+        self.crt_lines()
+        screen.blit(self.tv, (0, 0))
+
+
 if __name__ == "__main__":
     pygame.init()
     SCREEN_WIDTH, SCREEN_HEIGHT = 600, 600
     screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
     clock = pygame.time.Clock()
     game = Game()
+    crt = CRT()
 
     ALIENLASER = pygame.USEREVENT + 1
     pygame.time.set_timer(ALIENLASER, 800)
@@ -182,6 +201,7 @@ if __name__ == "__main__":
 
         screen.fill((30, 30, 30))
         game.run()
+        crt.draw()
 
         pygame.display.flip()
         clock.tick(FPS)
