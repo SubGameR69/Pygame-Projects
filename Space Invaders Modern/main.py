@@ -12,6 +12,11 @@ class Game:
         player_sprite = Player((SCREEN_WIDTH / 2, SCREEN_HEIGHT), SCREEN_WIDTH, 5)
         self.player = pygame.sprite.GroupSingle(player_sprite)
 
+        # health and score system
+        self.lives = 3
+        self.live_surf = pygame.image.load("./graphics/player.png").convert_alpha()
+        self.live_x_pos = SCREEN_WIDTH - (self.live_surf.get_size()[0] * 2 + 20)
+
         # obstacle setup
         self.shape = obstacle.shape
         self.block_size = 6
@@ -106,8 +111,10 @@ class Game:
                 # player collision
                 if pygame.sprite.spritecollide(laser, self.player, False):
                     laser.kill()
-                    print("dead")
-
+                    self.lives -= 1
+                    if self.lives <= 0:
+                        pygame.quit()
+                        sys.exit()
         # aliens
         if self.aliens:
             for alien in self.aliens:
@@ -115,6 +122,11 @@ class Game:
                 if pygame.sprite.spritecollide(alien, self.player, False):
                     pygame.quit()
                     sys.exit()
+
+    def display_lives(self):
+        for live in range(self.lives - 1):
+            x = self.live_x_pos + (live * (self.live_surf.get_size()[0] + 10))
+            screen.blit(self.live_surf, (x, 8))
 
     def run(self):
         # update all sprite groups
@@ -125,6 +137,7 @@ class Game:
         self.extra_alien_timer()
         self.extra.update()
         self.collision_checker()
+        self.display_lives()
 
         # draw all sprite groups
         self.player.sprite.lasers.draw(screen)
