@@ -18,3 +18,5 @@ shape = [
     "xxx     xxx",
     "xx       xx"
 ]
+
+# END OF THE GAME

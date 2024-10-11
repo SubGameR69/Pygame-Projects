@@ -35,6 +35,4 @@ class Extra(pygame.sprite.Sprite):
                 (self.speed > 0 and self.rect.left > self.screen_width):
             self.kill()
 
-
-
-
+# END OF THE GAME

@@ -17,3 +17,5 @@ class Laser(pygame.sprite.Sprite):
     def update(self):
         self.rect.y += self.speed
         self.destroy()
+
+# END OF THE GAME
