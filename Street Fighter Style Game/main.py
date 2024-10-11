@@ -1,4 +1,5 @@
 import pygame, sys
+from fighter import Fighter
 
 pygame.init()
 
@@ -11,6 +12,9 @@ pygame.display.set_caption("Street Fighter")
 clock = pygame.time.Clock()
 
 bg_img = pygame.image.load("./assets/images/background/background.jpg").convert_alpha()
+
+fighter_1 = Fighter(200, 310)
+fighter_2 = Fighter(700, 310)
 
 
 def draw_bg():
@@ -25,6 +29,8 @@ while running:
             running = False
 
     draw_bg()
+    fighter_1.draw(screen)
+    fighter_2.draw(screen)
 
     pygame.display.flip()
     clock.tick(FPS)
