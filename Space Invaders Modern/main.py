@@ -150,6 +150,12 @@ class Game:
         score_rect = score_surf.get_rect(topleft=(10, -10))
         screen.blit(score_surf, score_rect)
 
+    def victory_msg(self):
+        if not self.aliens.sprites():
+            victory_surf = self.font.render("YOU WON!", False, "white")
+            victory_rect = victory_surf.get_rect(center=(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2))
+            screen.blit(victory_surf, victory_rect)
+
     def run(self):
         # update all sprite groups
         self.player.update()
@@ -169,6 +175,7 @@ class Game:
         self.extra.draw(screen)
         self.display_lives()
         self.display_score()
+        self.victory_msg()
 
 
 class CRT:
