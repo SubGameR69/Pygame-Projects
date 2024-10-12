@@ -32,7 +32,7 @@ while running:
     fighter_1.draw(screen)
     fighter_2.draw(screen)
 
-    fighter_1.move(SCREEN_WIDTH)
+    fighter_1.move(SCREEN_WIDTH, SCREEN_HEIGHT)
 
     pygame.display.flip()
     clock.tick(FPS)
