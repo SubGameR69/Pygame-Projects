@@ -20,6 +20,12 @@ fighter_2 = Fighter(700, 310)
 def draw_bg():
     new_bg = pygame.transform.scale(bg_img, (SCREEN_WIDTH, SCREEN_HEIGHT))
     screen.blit(new_bg, (0, 0))
+    
+def draw_healthbar(health, x, y):
+    ratio = health / 100
+    pygame.draw.rect(screen, "white", (x - 2, y - 2, 404, 34))
+    pygame.draw.rect(screen, "red", (x, y, 400, 30))
+    pygame.draw.rect(screen, "yellow", (x, y, 400 * ratio, 30))
 
 
 running = True
@@ -33,6 +39,9 @@ while running:
     fighter_2.draw(screen)
 
     fighter_1.move(SCREEN_WIDTH, SCREEN_HEIGHT, screen, fighter_2)
+    
+    draw_healthbar(fighter_1.health, 20, 20)
+    draw_healthbar(fighter_2.health, 580, 20)
 
     pygame.display.flip()
     clock.tick(FPS)
