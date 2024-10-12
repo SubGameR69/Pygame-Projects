@@ -2,8 +2,15 @@ import pygame
 
 
 class Fighter:
-    def __init__(self, x, y):
-        self.flip = False
+    def __init__(self, x, y, flip, data, sprite_sheet, animation_steps):
+        self.size = data[0]
+        self.image_scale = data[1]
+        self.offset = data[2]
+        self.flip = flip
+        self.animation_list = self.load_sprites(sprite_sheet, animation_steps)
+        self.action = 0  # 0: idle 1: run 2: jump 3: attack 4: attack2 5: hit 6: death
+        self.frame_idx = 0
+        self.image = self.animation_list[self.action][self.frame_idx]
         self.rect = pygame.Rect(x, y, 80, 180)
         self.vel_y = 0
         self.jumping = False
@@ -12,6 +19,17 @@ class Fighter:
         self.attack_type = 0
         
         self.health = 100
+
+    def load_sprites(self, sprite_sheet, animation_steps):
+        animation_list = []
+        for y, animation in enumerate(animation_steps):
+            temp_img_list = []
+            for x in range(animation):
+                temp_img = sprite_sheet.subsurface(x * self.size, y * self.size, self.size, self.size)
+                scaled_img = pygame.transform.scale(temp_img, (self.size * self.image_scale, self.size * self.image_scale))
+                temp_img_list.append(scaled_img)
+            animation_list.append(temp_img_list)
+        return animation_list
 
     def move(self, screen_width, screen_height, screen, target):
         speed = 10
@@ -65,4 +83,6 @@ class Fighter:
         pygame.draw.rect(screen, "green", attacking_rect)
 
     def draw(self, screen):
+        img = pygame.transform.flip(self.image, self.flip, False)
         pygame.draw.rect(screen, "red", self.rect)
+        screen.blit(img, (self.rect.x - (self.offset[0] * self.image_scale), self.rect.y - (self.offset[1] * self.image_scale)))
