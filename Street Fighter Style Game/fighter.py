@@ -11,14 +11,17 @@ class Fighter:
         self.action = 0  # 0: idle 1: run 2: jump 3: attack 4: attack2 5: hit 6: death
         self.frame_idx = 0
         self.image = self.animation_list[self.action][self.frame_idx]
+        self.update_time = pygame.time.get_ticks()
         self.rect = pygame.Rect(x, y, 80, 180)
         self.vel_y = 0
         self.jumping = False
-        
+        self.running = False
         self.attacking = False
         self.attack_type = 0
-        
+        self.attack_cooldown = 0
+        self.hit = False
         self.health = 100
+        self.alive = True
 
     def load_sprites(self, sprite_sheet, animation_steps):
         animation_list = []
@@ -34,6 +37,8 @@ class Fighter:
     def move(self, screen_width, screen_height, screen, target):
         speed = 10
         gravity = 2
+        self.running = False
+        self.attack_type = 0
 
         # movement
         keys = pygame.key.get_pressed()
@@ -41,8 +46,10 @@ class Fighter:
         if not self.attacking:
             if keys[pygame.K_a]:
                 self.rect.x += -speed
+                self.running = True
             if keys[pygame.K_d]:
                 self.rect.x += speed
+                self.running = True
             # jumping
             if keys[pygame.K_SPACE] and not self.jumping:
                 self.vel_y = -30
@@ -68,19 +75,66 @@ class Fighter:
             self.rect.left = 0
         if self.rect.right >= screen_width:
             self.rect.right = screen_width
-            
+
+        if self.attack_cooldown > 0:
+            self.attack_cooldown -= 1
+
         if target.rect.centerx > self.rect.centerx:
             self.flip = False
         else:
             self.flip = True
+
+    def update(self):
+        if self.health <= 0:
+            self.health = 0
+            self.alive = False
+            self.update_action(6)  # 6: death
+        elif self.hit:
+            self.update_action(5)  # 5: hit
+        elif self.attacking:
+            if self.attack_type == 1:
+                self.update_action(3)  # 3: attack1
+            elif self.attack_type == 2:
+                self.update_action(4)  # 4: attack2
+        elif self.jumping:
+            self.update_action(2)  # 2: jump
+        elif self.running:
+            self.update_action(1)  # 1: run
+        else:
+            self.update_action(0)  # 0: idle
+
+        animation_cooldown = 60
+        self.image = self.animation_list[self.action][self.frame_idx]
+        if pygame.time.get_ticks() - self.update_time > animation_cooldown:
+            self.frame_idx += 1
+            self.update_time = pygame.time.get_ticks()
+        if self.frame_idx >= len(self.animation_list[self.action]):
+            if not self.alive:
+                self.frame_idx = len(self.animation_list[self.action]) - 1
+            else:
+                self.frame_idx = 0
+                if self.action == 3 or self.action == 4:
+                    self.attacking = False
+                    self.attack_cooldown = 20
+                if self.action == 5:
+                    self.hit = False
+                    self.attacking = False
+                    self.attack_cooldown = 20
                 
     def attack(self, screen, target):
-        self.attacking = True
-        attacking_rect = pygame.Rect(self.rect.centerx - (2 * self.rect.width * self.flip), self.rect.y, self.rect.width * 2, self.rect.height)
-        if attacking_rect.colliderect(target.rect):
-            target.health -= 10
-        
-        pygame.draw.rect(screen, "green", attacking_rect)
+        if self.attack_cooldown == 0:
+            self.attacking = True
+            attacking_rect = pygame.Rect(self.rect.centerx - (2 * self.rect.width * self.flip), self.rect.y, self.rect.width * 2, self.rect.height)
+            if attacking_rect.colliderect(target.rect):
+                target.health -= 10
+                target.hit = True
+            pygame.draw.rect(screen, "green", attacking_rect)
+
+    def update_action(self, action):
+        if action != self.action:
+            self.action = action
+            self.frame_idx = 0
+            self.update_time = pygame.time.get_ticks()
 
     def draw(self, screen):
         img = pygame.transform.flip(self.image, self.flip, False)
