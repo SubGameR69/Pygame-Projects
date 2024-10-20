@@ -28,8 +28,8 @@ wizard_sheet = pygame.image.load("./assets/images/wizard/Sprites/wizard.png").co
 WARRIOR_ANIMATION_STEPS = [10, 8, 1, 7, 7, 3, 7]
 WIZARD_ANIMATION_STEPS = [8, 8, 1, 8, 8, 3, 7]
 
-fighter_1 = Fighter(200, 310, False, WARRIOR_DATA, warrior_sheet, WARRIOR_ANIMATION_STEPS)
-fighter_2 = Fighter(700, 310, True, WIZARD_DATA, wizard_sheet, WIZARD_ANIMATION_STEPS)
+fighter_1 = Fighter(1, 200, 310, False, WARRIOR_DATA, warrior_sheet, WARRIOR_ANIMATION_STEPS)
+fighter_2 = Fighter(2, 700, 310, True, WIZARD_DATA, wizard_sheet, WIZARD_ANIMATION_STEPS)
 
 
 def draw_bg():
@@ -58,6 +58,7 @@ while running:
     fighter_2.update()
 
     fighter_1.move(SCREEN_WIDTH, SCREEN_HEIGHT, screen, fighter_2)
+    fighter_2.move(SCREEN_WIDTH, SCREEN_HEIGHT, screen, fighter_1)
     
     draw_healthbar(fighter_1.health, 20, 20)
     draw_healthbar(fighter_2.health, 580, 20)
