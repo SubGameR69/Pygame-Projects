@@ -121,3 +121,5 @@ while running:
 
 pygame.quit()
 sys.exit()
+
+#----------------- END OF THE GAME ---------------------
