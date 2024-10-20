@@ -13,6 +13,9 @@ clock = pygame.time.Clock()
 
 bg_img = pygame.image.load("./assets/images/background/background.jpg").convert_alpha()
 
+intro_count = 3
+last_count_update = pygame.time.get_ticks()
+
 WARRIOR_SIZE = 162
 WARRIOR_SCALE = 4
 WARRIOR_OFFSET = [72, 56]
@@ -28,8 +31,16 @@ wizard_sheet = pygame.image.load("./assets/images/wizard/Sprites/wizard.png").co
 WARRIOR_ANIMATION_STEPS = [10, 8, 1, 7, 7, 3, 7]
 WIZARD_ANIMATION_STEPS = [8, 8, 1, 8, 8, 3, 7]
 
+count_font = pygame.font.Font("assets/fonts/turok.ttf", 80)
+score_font = pygame.font.Font("assets/fonts/turok.ttf", 30)
+
 fighter_1 = Fighter(1, 200, 310, False, WARRIOR_DATA, warrior_sheet, WARRIOR_ANIMATION_STEPS)
 fighter_2 = Fighter(2, 700, 310, True, WIZARD_DATA, wizard_sheet, WIZARD_ANIMATION_STEPS)
+
+
+def draw_text(text, font, text_col, x, y):
+    img = font.render(text, True, text_col)
+    screen.blit(img, (x, y))
 
 
 def draw_bg():
@@ -56,9 +67,14 @@ while running:
 
     fighter_1.update()
     fighter_2.update()
-
-    fighter_1.move(SCREEN_WIDTH, SCREEN_HEIGHT, screen, fighter_2)
-    fighter_2.move(SCREEN_WIDTH, SCREEN_HEIGHT, screen, fighter_1)
+    if intro_count <= 0:
+        fighter_1.move(SCREEN_WIDTH, SCREEN_HEIGHT, screen, fighter_2)
+        fighter_2.move(SCREEN_WIDTH, SCREEN_HEIGHT, screen, fighter_1)
+    else:
+        draw_text(str(intro_count), count_font, "red", SCREEN_WIDTH / 2, SCREEN_HEIGHT / 3)
+        if (pygame.time.get_ticks() - last_count_update) >= 1000:
+            intro_count -= 1
+            last_count_update = pygame.time.get_ticks()
     
     draw_healthbar(fighter_1.health, 20, 20)
     draw_healthbar(fighter_2.health, 580, 20)
