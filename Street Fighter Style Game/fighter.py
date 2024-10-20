@@ -35,7 +35,7 @@ class Fighter:
             animation_list.append(temp_img_list)
         return animation_list
 
-    def move(self, screen_width, screen_height, screen, target):
+    def move(self, screen_width, screen_height, screen, target, round_over):
         speed = 10
         gravity = 2
         self.running = False
@@ -44,7 +44,7 @@ class Fighter:
         # movement
         keys = pygame.key.get_pressed()
         
-        if not self.attacking and self.alive:
+        if not self.attacking and self.alive and not round_over:
             if self.player == 1:
                 if keys[pygame.K_a]:
                     self.rect.x += -speed
@@ -59,7 +59,7 @@ class Fighter:
 
                 # attack
                 if keys[pygame.K_r] or keys[pygame.K_t]:
-                    self.attack(screen, target)
+                    self.attack(target)
                     if keys[pygame.K_r]:
                         self.attack_type = 1
                     if keys[pygame.K_t]:
@@ -79,7 +79,7 @@ class Fighter:
 
                 # attack
                 if keys[pygame.K_KP1] or keys[pygame.K_KP2]:
-                    self.attack(screen, target)
+                    self.attack(target)
                     if keys[pygame.K_KP1]:
                         self.attack_type = 1
                     if keys[pygame.K_KP2]:
@@ -143,14 +143,13 @@ class Fighter:
                     self.attacking = False
                     self.attack_cooldown = 20
                 
-    def attack(self, screen, target):
+    def attack(self, target):
         if self.attack_cooldown == 0:
             self.attacking = True
             attacking_rect = pygame.Rect(self.rect.centerx - (2 * self.rect.width * self.flip), self.rect.y, self.rect.width * 2, self.rect.height)
             if attacking_rect.colliderect(target.rect):
                 target.health -= 10
                 target.hit = True
-            pygame.draw.rect(screen, "green", attacking_rect)
 
     def update_action(self, action):
         if action != self.action:
@@ -160,5 +159,4 @@ class Fighter:
 
     def draw(self, screen):
         img = pygame.transform.flip(self.image, self.flip, False)
-        pygame.draw.rect(screen, "red", self.rect)
         screen.blit(img, (self.rect.x - (self.offset[0] * self.image_scale), self.rect.y - (self.offset[1] * self.image_scale)))
